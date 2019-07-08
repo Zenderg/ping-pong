@@ -1,1 +1,5 @@
-# ping-pong
+# game-rpg
+
+npm i
+
+parcel index.html
