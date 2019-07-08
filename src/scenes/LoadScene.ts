@@ -32,6 +32,7 @@ export class LoadScene extends Phaser.Scene{
     }
     init(){}
     preload(){
+        this.load.atlas('assets', './assets/atlas/breakout.png', './assets/atlas/breakout.json');
         this.load.spritesheet('anna', './assets/sprite/anna.png', {frameHeight: 64, frameWidth: 64});
         this.load.atlas('characters', './assets/atlas/characters.png', './assets/atlas/characters.json');
         this.load.atlas('daze', './assets/atlas/daze.png', './assets/atlas/daze.json');
