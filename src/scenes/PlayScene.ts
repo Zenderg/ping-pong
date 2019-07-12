@@ -2,8 +2,8 @@ import {CST} from "../CST";
 
 export class PlayScene extends Phaser.Scene {
     keyboard!: { [index: string]: Phaser.Input.Keyboard.Key };
-    ball!: Phaser.GameObjects.Image;
-    paddle!: Phaser.GameObjects.Image;
+    ball!: Phaser.Physics.Arcade.Image;
+    paddle!: Phaser.Physics.Arcade.Image;
 
     constructor() {
         super({key: CST.SCENES.PLAY});
@@ -14,13 +14,7 @@ export class PlayScene extends Phaser.Scene {
     }
 
     preload() {
-        // this.bar1 = this.add.graphics({
-        //     fillStyle:{
-        //         color: 0xffffff
-        //     }
-        // });
-        //
-        // this.bar1.fillRect(0, this.game.renderer.height - 5, 50, 5);
+
     }
 
     create() {
@@ -32,11 +26,12 @@ export class PlayScene extends Phaser.Scene {
 
         this.paddle = this.physics.add.image(400, 550, 'assets', 'paddle1').setImmovable();
 
-        //  Our colliders
+        //  Our collides
         this.physics.add.collider(this.ball, this.paddle, this.hitPaddle, null, this);
 
-        this.input.on('pointermove', function (pointer) {
-            this.paddle.x = Phaser.Math.Clamp(pointer.x, 52, 748);
+        this.input.on('pointermove', (pointer: Phaser.Input. Pointer) => {
+            const paddleWidth = 52;
+            this.paddle.x = Phaser.Math.Clamp(pointer.x, paddleWidth, this.game.renderer.width - paddleWidth);
 
             if (this.ball.getData('onPaddle')) {
                 this.ball.x = this.paddle.x;
@@ -44,7 +39,7 @@ export class PlayScene extends Phaser.Scene {
 
         }, this);
 
-        this.input.on('pointerup', function (pointer) {
+        this.input.on('pointerup', () => {
 
             if (this.ball.getData('onPaddle')) {
                 this.ball.setVelocity(-75, -300);
@@ -55,12 +50,12 @@ export class PlayScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number) {
-        if (this.ball.y > 600) {
+        if (this.ball.y > this.game.renderer.height) {
             this.resetBall();
         }
     }
 
-    hitPaddle(ball, paddle) {
+    hitPaddle(ball:Phaser.Physics.Arcade.Image, paddle:Phaser.Physics.Arcade.Image) {
         let diff = 0;
 
         if (ball.x < paddle.x) {
@@ -73,8 +68,6 @@ export class PlayScene extends Phaser.Scene {
             ball.setVelocityX(2 + Math.random() * 8);
         }
     }
-
-,
 
     resetBall() {
         this.ball.setVelocity(0);
