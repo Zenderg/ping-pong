@@ -4,12 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel index.html --open"
+    "dev": "parcel index.html --open",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "parcel-bundler": "^1.12.3",
     "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "@types/socket.io-client": "^1.4.32",
+    "chokidar": "^3.0.2",
+    "express": "^4.17.1",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
   }
 }

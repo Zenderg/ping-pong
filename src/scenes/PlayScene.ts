@@ -1,20 +1,21 @@
 import {CST} from "../CST";
+import io from 'socket.io-client';
 
 export class PlayScene extends Phaser.Scene {
     keyboard!: { [index: string]: Phaser.Input.Keyboard.Key };
     ball!: Phaser.Physics.Arcade.Image;
     paddle!: Phaser.Physics.Arcade.Image;
+    socket!: SocketIOClient.Socket;
 
     constructor() {
         super({key: CST.SCENES.PLAY});
-
+        this.socket = io();
     }
 
     init() {
     }
 
     preload() {
-
     }
 
     create() {
@@ -24,17 +25,24 @@ export class PlayScene extends Phaser.Scene {
         this.ball = this.physics.add.image(400, 500, 'assets', 'ball1').setCollideWorldBounds(true).setBounce(1);
         this.ball.setData('onPaddle', true);
 
+
         this.paddle = this.physics.add.image(400, 550, 'assets', 'paddle1').setImmovable();
 
         //  Our collides
+        // @ts-ignore
         this.physics.add.collider(this.ball, this.paddle, this.hitPaddle, null, this);
 
-        this.input.on('pointermove', (pointer: Phaser.Input. Pointer) => {
+        this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
             const paddleWidth = 52;
+            let paddleX = this.paddle.x;
+            const paddleY = this.paddle.y;
+
             this.paddle.x = Phaser.Math.Clamp(pointer.x, paddleWidth, this.game.renderer.width - paddleWidth);
 
+            this.socket.emit('player1-move', {paddleX, paddleY});
+
             if (this.ball.getData('onPaddle')) {
-                this.ball.x = this.paddle.x;
+                this.ball.x = paddleX;
             }
 
         }, this);
@@ -55,7 +63,7 @@ export class PlayScene extends Phaser.Scene {
         }
     }
 
-    hitPaddle(ball:Phaser.Physics.Arcade.Image, paddle:Phaser.Physics.Arcade.Image) {
+    hitPaddle(ball: Phaser.Physics.Arcade.Image, paddle: Phaser.Physics.Arcade.Image) {
         let diff = 0;
 
         if (ball.x < paddle.x) {

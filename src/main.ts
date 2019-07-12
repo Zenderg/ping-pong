@@ -8,6 +8,7 @@ const ratio = Math.max(window.innerWidth / window.innerHeight, window.innerHeigh
 const DEFAULT_HEIGHT = 630; // any height you want
 const DEFAULT_WIDTH = ratio * DEFAULT_HEIGHT;
 
+// const socket = io();
 const game = new Phaser.Game({
     scene:[
         LoadScene, MenuScene, PlayScene
