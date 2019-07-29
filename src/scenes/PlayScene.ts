@@ -19,6 +19,7 @@ export class PlayScene extends Phaser.Scene {
     }
 
     create() {
+        console.log(this.socket.id);
         // @ts-ignore
         this.keyboard = this.input.keyboard.addKeys("W, A, S, D");
         this.physics.world.setBoundsCollision(true, true, true, false);
@@ -55,10 +56,23 @@ export class PlayScene extends Phaser.Scene {
             }
 
         }, this);
+
+        this.socket.on('player1-move', (coords:{paddleX:number, paddleY:number}) => {
+            this.paddle.x = coords.paddleX;
+        });
+
+        this.socket.on('ball-move', (coords:{ballX:number, ballY:number}) => {
+            this.ball.x = coords.ballX;
+            this.ball.y = coords.ballY;
+        });
     }
 
     update(time: number, delta: number) {
-        if (this.ball.y > this.game.renderer.height) {
+        const ballX = this.ball.x;
+        const ballY = this.ball.y;
+
+        this.socket.emit('ball-move', {ballX, ballY});
+        if (ballY > this.game.renderer.height) {
             this.resetBall();
         }
     }

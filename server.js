@@ -19,11 +19,25 @@ watcher.on('ready', () => {
   });
 });
 
+const clients = [];
+
 io.on('connection', function(socket) {
   console.log('a user connected');
-  socket.on('player1-move', coords => {
-    console.log(coords);
+
+  clients.push(socket);
+
+  socket.on('player1-move', (coords) => {
+    if(clients[0].id === socket.id) {
+      socket.broadcast.emit('player1-move', coords);
+    }
   });
+
+  socket.on('ball-move', coords => {
+    if(clients[0].id === socket.id) {
+      socket.broadcast.emit('ball-move', coords);
+    }
+  });
+
   socket.on('disconnect', function() {
     console.log('user disconnected');
   });
